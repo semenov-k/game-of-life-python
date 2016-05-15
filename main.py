@@ -9,6 +9,15 @@ CELL_SIZE = 5
 
 InGame = False
 
+top_frame = Frame(root)
+start_button = Button(top_frame, text="Start", width=10)
+stop_button = Button(top_frame, text="Stop", width=10)
+clear_button = Button(top_frame, text="Clear", width=10)
+start_button.grid(row=0, column=0)
+stop_button.grid(row=0, column=1)
+clear_button.grid(row=0, column=2)
+top_frame.grid()
+
 canvas = Canvas(root, height=HEIGHT, width=WIDTH, bg="white")
 canvas.grid()
 class Cell:
