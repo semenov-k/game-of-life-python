@@ -52,16 +52,16 @@ class Field:
             for x in range(len(self.matrix) - 1):
                 counter = 0
                 for vector in around_vector:
-                    if self.matrix[x+vector[0], y+vector[1]]:
+                    if self.matrix[x+vector[0]][y+vector[1]]:
                         counter += 1
-                if self.matrix[x, y].alive:
+                if self.matrix[x][y].alive:
                     if counter < 2:
-                        self.matrix[x, y].set_dead()
+                        self.matrix[x][y].set_dead()
                     if counter > 3:
-                        self.matrix[x, y].set_dead()
+                        self.matrix[x][y].set_dead()
                 else:
                     if counter == 3:
-                        self.matrix[x, y].set_alive()
+                        self.matrix[x][y].set_alive()
 
 field = Field()
 canvas.bind("<B1-Motion>", field.draw_start_state)
