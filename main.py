@@ -1,4 +1,5 @@
 from tkinter import *
+import Timetest
 
 class App(Tk):
     # canvas size in pixels
@@ -83,6 +84,7 @@ class App(Tk):
                         self.matrix[y][x].set_alive()
                     else:
                         self.matrix[y][x].set_dead()
+
         def draw_start_state(self, event):
             if not App.InGame and 0 < event.x < App.WIDTH and 0 < event.y < App.HEIGHT:
                 self.matrix[(event.y - 5) // App.CELL_SIZE][(event.x - 5) // App.CELL_SIZE].set_alive()
