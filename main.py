@@ -101,6 +101,8 @@ class App(Tk):
                     if self.matrix[y][x].alive:
                         if not (2 <= counter <= 3):
                             self.matrix[y][x].next_gen = False
+                        else:
+                            self.matrix[y][x].next_gen = True
                     else:
                         if counter == 3:
                             self.matrix[y][x].next_gen = True
