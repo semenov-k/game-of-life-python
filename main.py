@@ -61,14 +61,13 @@ class App(Tk):
                 self.rect = canvas.create_rectangle(x, y, x + App.CELL_SIZE, y + App.CELL_SIZE, fill="black", outline="#013220")
                 self.canvas = canvas
                 self.next_gen = self.alive
-
             def set_alive(self):
                 self.alive = True
-                self.canvas.itemconfig(self.rect, fill="red")
+                #self.canvas.itemconfig(self.rect, fill="red") #тормоз в смене цвета
 
             def set_dead(self):
                 self.alive = False
-                self.canvas.itemconfig(self.rect, fill="black")
+                #self.canvas.itemconfig(self.rect, fill="black")
 
         def __init__(self, canvas):
             self.matrix = []
@@ -77,6 +76,8 @@ class App(Tk):
                 for x in range(int(App.WIDTH / App.CELL_SIZE) - 1):
                     temp.append(self.Cell(x * App.CELL_SIZE + 5, y * App.CELL_SIZE + 5, canvas))
                 self.matrix.append(temp)
+
+        @Timetest.time_test #0.09s
         def next_generation(self):
             for y in range(len(self.matrix) - 1):
                 for x in range(len(self.matrix[y]) - 1):
@@ -89,6 +90,7 @@ class App(Tk):
             if not App.InGame and 0 < event.x < App.WIDTH and 0 < event.y < App.HEIGHT:
                 self.matrix[(event.y - 5) // App.CELL_SIZE][(event.x - 5) // App.CELL_SIZE].set_alive()
 
+        #@Timetest.time_test #0.1s
         def calculation_of_life(self):
             around_vector = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
             for y in range(len(self.matrix) - 1):
