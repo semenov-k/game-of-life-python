@@ -14,12 +14,9 @@ class App(Tk):
         self.resizable(width=False, height=False)
         # GUI
         top_frame = Frame(self)
-        start_button = Button(top_frame, text="Start", width=10)
-        stop_button = Button(top_frame, text="Stop", width=10, state=DISABLED)
-        clear_button = Button(top_frame, text="Clear", width=10)
-        start_button.grid(row=0, column=0)
-        stop_button.grid(row=0, column=1)
-        clear_button.grid(row=0, column=2)
+        Button(top_frame, text="Start", width=10).grid(row=0, column=0)
+        Button(top_frame, text="Stop", width=10, state=DISABLED).grid(row=0, column=1)
+        Button(top_frame, text="Clear", width=10).grid(row=0, column=2)
         top_frame.grid(pady=10)
 
         canvas = Canvas(self, height=App.HEIGHT, width=App.WIDTH, bg="white")
