@@ -10,22 +10,46 @@ class App(Tk):
 
     def __init__(self):
         Tk.__init__(self)
+        App.root = self
         self.title("Game of Life")
         self.resizable(width=False, height=False)
         # GUI
         top_frame = Frame(self)
-        Button(top_frame, text="Start", width=10).grid(row=0, column=0)
-        Button(top_frame, text="Stop", width=10, state=DISABLED).grid(row=0, column=1)
-        Button(top_frame, text="Clear", width=10).grid(row=0, column=2)
-        top_frame.grid(pady=10)
+        self.bStart = Button(top_frame, text="Start", width=10, command=self.bStart_handler)
+        self.bStart.grid(row=0, column=0)
+        self.bStop = Button(top_frame, text="Stop", width=10, state=DISABLED, command=self.bStop_handler)
+        self.bStop.grid(row=0, column=1)
+        Button(top_frame, text="Clear", width=10, command=self.bClear_handler).grid(row=0, column=2)
+        speed_frame = Frame(self)
+        App.fps_scale = Scale(speed_frame, orient=HORIZONTAL, length=300, from_=10, to=100, tickinterval=10, resolution=5, label="Delay", showvalue=0)
+        App.fps_scale.set(50)
+        App.fps_scale.grid()
+        speed_frame.grid(row=0)
+        top_frame.grid(pady=10, row=1)
 
         canvas = Canvas(self, height=App.HEIGHT, width=App.WIDTH, bg="white")
         canvas.grid()
 
-        field = App.Field(canvas)
-        canvas.bind("<B1-Motion>", field.draw_start_state)
-        canvas.bind("<ButtonPress-1>", field.draw_start_state)
+        self.field = App.Field(canvas)
+        canvas.bind("<B1-Motion>", self.field.draw_start_state)
+        canvas.bind("<ButtonPress-1>", self.field.draw_start_state)
         self.mainloop()
+    #Buttons event handlers
+    def bStart_handler(self):
+        self.bStart["state"] = DISABLED
+        self.bStop["state"] = ACTIVE
+        App.InGame = True
+        self.field.calculation_of_life()
+
+    def bStop_handler(self):
+        self.bStart["state"] = ACTIVE
+        self.bStop["state"] = DISABLED
+        App.InGame = False
+
+    def bClear_handler(self):
+        for y in range(len(self.field.matrix) - 1):
+            for x in range(len(self.field.matrix[y]) - 1):
+                self.field.matrix[y][x].set_dead()
 
     class Field:
         class Cell:
@@ -33,6 +57,7 @@ class App(Tk):
                 self.alive = False
                 self.rect = canvas.create_rectangle(x, y, x + App.CELL_SIZE, y + App.CELL_SIZE, fill="white", outline="#dddddd")
                 self.canvas = canvas
+                self.next_generation = self.alive
 
             def set_alive(self):
                 self.alive = True
@@ -49,27 +74,39 @@ class App(Tk):
                 for x in range(int(App.WIDTH / App.CELL_SIZE) - 1):
                     temp.append(self.Cell(x * App.CELL_SIZE + 5, y * App.CELL_SIZE + 5, canvas))
                 self.matrix.append(temp)
-
+        def next_generation(self):
+            for y in range(len(self.matrix) - 1):
+                for x in range(len(self.matrix[y]) - 1):
+                    if self.matrix[y, x].next_generation:
+                        self.matrix[y, x].set_alive()
+                    else:
+                        self.matrix[y, x].set_dead()
         def draw_start_state(self, event):
-            if not App.InGame:
+            if not App.InGame and 0 < event.x < App.WIDTH and 0 < event.y < App.HEIGHT:
                 self.matrix[(event.y - 5) // App.CELL_SIZE][(event.x - 5) // App.CELL_SIZE].set_alive()
 
         def calculation_of_life(self):
+            print("calc")
             around_vector = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
             for y in range(len(self.matrix) - 1):
-                for x in range(len(self.matrix) - 1):
+                for x in range(len(self.matrix[y]) - 1):
                     counter = 0
                     for vector in around_vector:
-                        if self.matrix[x + vector[0]][y + vector[1]]:
-                            counter += 1
-                    if self.matrix[x][y].alive:
+                        try:
+                            if self.matrix[y + vector[0]][x + vector[1]]:
+                                counter += 1
+                        except IndexError:
+                            pass
+                    if self.matrix[y][x].alive:
                         if counter < 2:
-                            self.matrix[x][y].set_dead()
+                            self.matrix[y][x].set_dead()
                         if counter > 3:
-                            self.matrix[x][y].set_dead()
+                            self.matrix[y][x].set_dead()
                     else:
                         if counter == 3:
-                            self.matrix[x][y].set_alive()
+                            self.matrix[y][x].set_alive()
+            if App.InGame:
+                App.root.after(App.fps_scale.get(), self.calculation_of_life)
 
 if __name__ == "__main__":
     app = App()
