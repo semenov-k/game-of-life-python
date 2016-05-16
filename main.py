@@ -22,33 +22,35 @@ class App(Tk):
         clear_button.grid(row=0, column=2)
         top_frame.grid(pady=10)
 
-        self.canvas = Canvas(self, height=App.HEIGHT, width=App.WIDTH, bg="white")
-        self.canvas.grid()
+        canvas = Canvas(self, height=App.HEIGHT, width=App.WIDTH, bg="white")
+        canvas.grid()
 
-        field = App.Field()
-        self.canvas.bind("<B1-Motion>", field.draw_start_state)
-        self.canvas.bind("<ButtonPress-1>", field.draw_start_state)
+        field = App.Field(canvas)
+        canvas.bind("<B1-Motion>", field.draw_start_state)
+        canvas.bind("<ButtonPress-1>", field.draw_start_state)
+        self.mainloop()
 
     class Field:
         class Cell:
-            def __init__(self, x, y):
+            def __init__(self, x, y, canvas):
                 self.alive = False
                 self.rect = canvas.create_rectangle(x, y, x + App.CELL_SIZE, y + App.CELL_SIZE, fill="white", outline="#dddddd")
+                self.canvas = canvas
 
             def set_alive(self):
                 self.alive = True
-                canvas.itemconfig(self.rect, fill="black")
+                self.canvas.itemconfig(self.rect, fill="black")
 
             def set_dead(self):
                 self.alive = False
-                canvas.itemconfig(self.rect, fill="white")
+                self.canvas.itemconfig(self.rect, fill="white")
 
-        def __init__(self):
+        def __init__(self, canvas):
             self.matrix = []
             for y in range(int(App.HEIGHT / App.CELL_SIZE) - 1):
                 temp = []
                 for x in range(int(App.WIDTH / App.CELL_SIZE) - 1):
-                    temp.append(self.Cell(x * App.CELL_SIZE + 5, y * App.CELL_SIZE + 5))
+                    temp.append(self.Cell(x * App.CELL_SIZE + 5, y * App.CELL_SIZE + 5, canvas))
                 self.matrix.append(temp)
 
         def draw_start_state(self, event):
@@ -74,7 +76,7 @@ class App(Tk):
 
 if __name__ == "__main__":
     app = App()
-    app.mainloop()
+
 
 
 
