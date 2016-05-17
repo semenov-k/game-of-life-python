@@ -63,11 +63,11 @@ class App(Tk):
                 self.next_gen = self.alive
             def set_alive(self):
                 self.alive = True
-                #self.canvas.itemconfig(self.rect, fill="red") #тормоз в смене цвета
+                self.canvas.itemconfig(self.rect, fill="red") #тормоз в смене цвета
 
             def set_dead(self):
                 self.alive = False
-                #self.canvas.itemconfig(self.rect, fill="black")
+                self.canvas.itemconfig(self.rect, fill="black")
 
         def __init__(self, canvas):
             self.matrix = []
@@ -77,7 +77,7 @@ class App(Tk):
                     temp.append(self.Cell(x * App.CELL_SIZE + 5, y * App.CELL_SIZE + 5, canvas))
                 self.matrix.append(temp)
 
-        @Timetest.time_test #0.09s
+        #@Timetest.time_test #0.09s
         def next_generation(self):
             for y in range(len(self.matrix) - 1):
                 for x in range(len(self.matrix[y]) - 1):
