@@ -31,6 +31,8 @@ class App(Tk):
         canvas = Canvas(self, height=App.HEIGHT, width=App.WIDTH)
         canvas.grid()
 
+        self.count_live_cell = canvas.create_text(20, 20, fill="blue", text="Live cell")
+
         self.field = App.Field(canvas)
         Button(top_frame, text="One step", width=10, command=self.field.calculation_of_life).grid(row=0, column=2)
 
@@ -77,20 +79,20 @@ class App(Tk):
                     temp.append(self.Cell(x * App.CELL_SIZE + 5, y * App.CELL_SIZE + 5, canvas))
                 self.matrix.append(temp)
 
-        #@Timetest.time_test #0.09s
+        #@Timetest.time_test #0.005s
         def next_generation(self):
             for y in range(len(self.matrix) - 1):
                 for x in range(len(self.matrix[y]) - 1):
-                    if self.matrix[y][x].next_gen:
+                    if self.matrix[y][x].next_gen and not self.matrix[y][x].alive:
                         self.matrix[y][x].set_alive()
-                    else:
+                    elif not self.matrix[y][x].next_gen and self.matrix[y][x].alive:
                         self.matrix[y][x].set_dead()
 
         def draw_start_state(self, event):
             if not App.InGame and 0 < event.x < App.WIDTH and 0 < event.y < App.HEIGHT:
                 self.matrix[(event.y - 5) // App.CELL_SIZE][(event.x - 5) // App.CELL_SIZE].set_alive()
 
-        #@Timetest.time_test #0.1s
+        #@Timetest.time_test #0.03s
         def calculation_of_life(self):
             around_vector = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
             for y in range(len(self.matrix) - 1):
