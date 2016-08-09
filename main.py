@@ -1,5 +1,5 @@
-from tkinter import *
-import Timetest
+from Tkinter import *
+#import Timetest
 
 class App(Tk):
     # canvas size in pixels
@@ -65,7 +65,7 @@ class App(Tk):
                 self.next_gen = self.alive
             def set_alive(self):
                 self.alive = True
-                self.canvas.itemconfig(self.rect, fill="red") #тормоз в смене цвета
+                self.canvas.itemconfig(self.rect, fill="red")
 
             def set_dead(self):
                 self.alive = False
